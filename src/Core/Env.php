@@ -4,28 +4,28 @@ declare(strict_types=1);
 
 namespace App\Core;
 
-final class Env
+function loadEnv(string $path): array
 {
-    private static array $vars = [];
-
-    public static function load(string $path): void
-    {
-        if (!is_file($path)) {
-            return;
-        }
-
-        $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
-        foreach ($lines as $line) {
-            if (str_starts_with(trim($line), '#') || !str_contains($line, '=')) {
-                continue;
-            }
-            [$key, $value] = explode('=', $line, 2);
-            self::$vars[trim($key)] = trim($value);
-        }
+    if (!is_file($path)) {
+        return [];
     }
 
-    public static function get(string $key, ?string $default = null): ?string
-    {
-        return self::$vars[$key] ?? getenv($key) ?: $default;
+    $env = [];
+    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
+    foreach ($lines as $line) {
+        $trimmed = trim($line);
+        if ($trimmed === '' || str_starts_with($trimmed, '#') || !str_contains($line, '=')) {
+            continue;
+        }
+
+        [$key, $value] = explode('=', $line, 2);
+        $env[trim($key)] = trim($value);
     }
+
+    return $env;
+}
+
+function env(array $envData, string $key, string $default = ''): string
+{
+    return $envData[$key] ?? $default;
 }
