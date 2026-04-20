@@ -23,6 +23,7 @@ final class AuthService
             return false;
         }
 
+        session_regenerate_id(true);
         $_SESSION['auth_user'] = [
             'ID' => (int) $user['ID'],
             'user_login' => $user['user_login'],
@@ -50,6 +51,9 @@ final class AuthService
 
     public function logout(): void
     {
-        unset($_SESSION['auth_user']);
+        $_SESSION = [];
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_destroy();
+        }
     }
 }

@@ -10,6 +10,7 @@
       <div class="card-body">
         <?php if (!empty($error)): ?><div class="alert alert-danger"><?= htmlspecialchars($error) ?></div><?php endif; ?>
         <form method="post" action="/login">
+          <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(\App\Security\CsrfService::token()) ?>">
           <div class="mb-3">
             <label class="form-label fw-semibold">Username</label>
             <div class="input-group">
