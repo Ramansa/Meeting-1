@@ -9,21 +9,24 @@ use wpdb;
 final class Database
 {
     private wpdb $db;
+    private array $envData;
 
-    public function __construct()
+    public function __construct(array $envData)
     {
+        $this->envData = $envData;
+
         if (!class_exists('wpdb')) {
             require_once dirname(__DIR__, 3) . '/wp-includes/wp-db.php';
         }
 
         $this->db = new wpdb(
-            Env::get('WP_DB_USER', ''),
-            Env::get('WP_DB_PASSWORD', ''),
-            Env::get('WP_DB_NAME', ''),
-            Env::get('WP_DB_HOST', '127.0.0.1')
+            env($this->envData, 'WP_DB_USER', ''),
+            env($this->envData, 'WP_DB_PASSWORD', ''),
+            env($this->envData, 'WP_DB_NAME', ''),
+            env($this->envData, 'WP_DB_HOST', '127.0.0.1')
         );
 
-        $this->db->prefix = Env::get('WP_DB_PREFIX', 'wb_');
+        $this->db->prefix = env($this->envData, 'WP_DB_PREFIX', 'wb_');
         $this->db->show_errors(false);
     }
 

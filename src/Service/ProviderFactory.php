@@ -4,27 +4,31 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Core\Env;
 use App\Provider\ProviderClientInterface;
 use App\Provider\TeamsClient;
 use App\Provider\ZoomClient;
+use function App\Core\env;
 
 final class ProviderFactory
 {
+    public function __construct(private array $envData)
+    {
+    }
+
     public function make(string $provider): ProviderClientInterface
     {
         if ($provider === 'teams') {
             return new TeamsClient(
-                Env::get('TEAMS_TENANT_ID', ''),
-                Env::get('TEAMS_CLIENT_ID', ''),
-                Env::get('TEAMS_CLIENT_SECRET', '')
+                env($this->envData, 'TEAMS_TENANT_ID', ''),
+                env($this->envData, 'TEAMS_CLIENT_ID', ''),
+                env($this->envData, 'TEAMS_CLIENT_SECRET', '')
             );
         }
 
         return new ZoomClient(
-            Env::get('ZOOM_CLIENT_ID', ''),
-            Env::get('ZOOM_CLIENT_SECRET', ''),
-            Env::get('ZOOM_ACCOUNT_ID', '')
+            env($this->envData, 'ZOOM_CLIENT_ID', ''),
+            env($this->envData, 'ZOOM_CLIENT_SECRET', ''),
+            env($this->envData, 'ZOOM_ACCOUNT_ID', '')
         );
     }
 }
