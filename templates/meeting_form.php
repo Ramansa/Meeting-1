@@ -8,6 +8,7 @@
 </div>
 <?php if (!empty($error)): ?><div class="alert alert-danger"><?= htmlspecialchars($error) ?></div><?php endif; ?>
 <form method="post" class="card shadow-sm border-0">
+  <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(\App\Security\CsrfService::token()) ?>">
   <div class="card-body row g-3">
     <div class="col-md-6">
       <label class="form-label fw-semibold">Title</label>

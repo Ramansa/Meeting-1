@@ -17,6 +17,11 @@ require_once __DIR__ . '/../src/Core/Autoload.php';
 require_once __DIR__ . '/../src/Core/Env.php';
 
 $envData = loadEnv(__DIR__ . '/../.env');
+session_set_cookie_params([
+    'httponly' => true,
+    'samesite' => 'Lax',
+    'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+]);
 session_start();
 
 $db = (new Database($envData))->wpdb();
@@ -28,6 +33,15 @@ $auth = new AuthService($userRepo);
 $meetingService = new MeetingService($meetingRepo, $lessonRepo, new ProviderFactory($envData), $db);
 $reportRepo = new ReportRepository($db);
 $controller = new AppController($auth, $userRepo, $meetingRepo, $meetingService, $reportRepo);
+
+$isHttps = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+header('X-Frame-Options: DENY');
+header('X-Content-Type-Options: nosniff');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
+if ($isHttps) {
+    header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+}
 
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 

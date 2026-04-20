@@ -50,6 +50,7 @@
   <div class="card-header"><i class="fa-solid fa-pen-to-square me-2 text-primary"></i>Update Meeting Status</div>
   <div class="card-body">
     <form class="row g-3" method="post" action="/meetings/status">
+      <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(\App\Security\CsrfService::token()) ?>">
       <div class="col-md-3">
         <label class="form-label fw-semibold">Meeting ID</label>
         <input class="form-control" name="meeting_id" placeholder="Meeting ID" required>

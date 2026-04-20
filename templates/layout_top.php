@@ -76,7 +76,10 @@
           <?= htmlspecialchars($_SESSION['auth_user']['display_name']) ?>
           <span class="badge text-bg-light ms-1"><?= htmlspecialchars($_SESSION['auth_user']['role']) ?></span>
         </span>
-        <a class="btn btn-sm btn-light" href="/logout"><i class="fa-solid fa-right-from-bracket me-1"></i>Logout</a>
+        <form class="d-inline" method="post" action="/logout">
+          <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(\App\Security\CsrfService::token()) ?>">
+          <button class="btn btn-sm btn-light" type="submit"><i class="fa-solid fa-right-from-bracket me-1"></i>Logout</button>
+        </form>
       <?php endif; ?>
     </div>
   </div>
